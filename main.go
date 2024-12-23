@@ -27,7 +27,7 @@ import (
 // NOTE: Make sure these files have the correct permissions, you likely copied
 // them from root.
 func main() {
-	f, err := os.OpenFile("logfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	f, err := os.OpenFile("log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
 	}
