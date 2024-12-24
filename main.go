@@ -58,13 +58,14 @@ func main() {
 				scan()
 				listServices()
 				ser.Close()
-				return
+				break
 			}
 
 			if err != nil {
 				fmt.Println(err)
 				continue
 			}
+			break
 		}
 	}()
 
