@@ -33,6 +33,7 @@ func main() {
 	}
 	defer f.Close()
 	log.SetOutput(f)
+
 	p := make([]byte, 2048)
 	addr := net.UDPAddr{
 		Port: 9913,
@@ -49,6 +50,12 @@ func main() {
 			if string(p)[:6] == "reload" {
 				scan()
 				fmt.Println("Reloaded Confs")
+				ser.Close()
+				break
+			}
+			if string(p)[:4] == "list" {
+				scan()
+				listServices()
 				ser.Close()
 				break
 			}
@@ -113,4 +120,10 @@ func makeProxy(s *serviceConf) *serviceConf {
 		},
 	}
 	return s
+}
+
+func listServices() {
+	for _, s := range pc.Services {
+		fmt.Println(s.App.DomainName)
+	}
 }
