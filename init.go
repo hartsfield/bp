@@ -132,7 +132,6 @@ func serviceReload(p string) {
 	}
 	c := "go build " + p + " -o " + sc.App.Command + " && mv " + sc.App.Command + " /home/" + sc.GCloud.User + "/bin/ && " + sc.App.Command
 	localCommand(strings.Split(c, " "))
-
 }
 
 func localCommand(command []string) string {

@@ -48,6 +48,7 @@ func main() {
 			_, _, err := ser.ReadFromUDP(p)
 			if string(p)[:6] == "reload" {
 				scan()
+				serviceReload("hrtsfld.xyz")
 				fmt.Println("Reloaded Confs")
 				ser.Close()
 				break
