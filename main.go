@@ -50,6 +50,7 @@ func main() {
 				scan()
 				fmt.Println("Reloaded Confs")
 				ser.Close()
+				break
 			}
 
 			if err != nil {
