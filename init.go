@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http/httputil"
 	"os"
+	"os/exec"
+	"strings"
 )
 
 // config is the configuration file for bolt-proxy
@@ -39,12 +41,14 @@ type serviceConf struct {
 
 type app struct {
 	Name       string `json:"name"`
+	Command    string `json:"command"`
+	DomainName string `json:"domain_name"`
 	Version    string `json:"version"`
 	Env        env    `json:"env"`
 	Port       string `json:"port"`
-	DomainName string `json:"domain_name"`
 	AlertsOn   bool   `json:"alertsOn"`
 	TLSEnabled bool   `json:"tls_enabled"`
+	Repo       string `json:"repo"`
 }
 
 type gcloud struct {
@@ -113,4 +117,30 @@ func proxyConf() {
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+func serviceReload(p string) {
+	p = pc.LiveDir + "/" + p
+	b, err := os.ReadFile(p + "/bolt.conf.json")
+	if err != nil {
+		log.Println(err)
+	}
+	sc := serviceConf{}
+	err = json.Unmarshal(b, &sc)
+	if err != nil {
+		log.Println(err)
+	}
+	c := "go build " + p + " -o " + sc.App.Command + " && mv " + sc.App.Command + " /home/" + sc.GCloud.User + "/bin/ && " + sc.App.Command
+	localCommand(strings.Split(c, " "))
+
+}
+
+func localCommand(command []string) string {
+	var cmd *exec.Cmd = &exec.Cmd{}
+	cmd = exec.Command(command[0], command[1:]...)
+	o, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Println("local command error: ", err, string(o))
+	}
+	return string(o)
 }
