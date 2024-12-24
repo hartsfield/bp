@@ -42,8 +42,8 @@ type app struct {
 	Version    string `json:"version"`
 	Env        env    `json:"env"`
 	Port       string `json:"port"`
-	AlertsOn   bool   `json:"alertsOn"`
 	DomainName string `json:"domain_name"`
+	AlertsOn   bool   `json:"alertsOn"`
 	TLSEnabled bool   `json:"tls_enabled"`
 }
 
@@ -102,7 +102,7 @@ func scan() {
 
 func proxyConf() {
 	if len(confPath) < 1 {
-		confPath = "/home/john/go_proxy/prox.conf"
+		confPath = "/home/john/bp/prox.conf"
 	}
 	file, err := os.ReadFile(confPath)
 	if err != nil {
