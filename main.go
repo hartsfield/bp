@@ -58,7 +58,7 @@ func main() {
 				scan()
 				listServices()
 				ser.Close()
-				break
+				return
 			}
 
 			if err != nil {
