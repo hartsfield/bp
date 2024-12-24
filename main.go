@@ -53,6 +53,7 @@ func main() {
 				ser.Close()
 				break
 			}
+
 			if string(p)[:4] == "list" {
 				scan()
 				listServices()
