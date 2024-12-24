@@ -34,39 +34,7 @@ func main() {
 	defer f.Close()
 	log.SetOutput(f)
 
-	p := make([]byte, 2048)
-	addr := net.UDPAddr{
-		Port: 9913,
-		IP:   net.ParseIP("127.0.0.1"),
-	}
-	ser, err := net.ListenUDP("udp", &addr)
-	if err != nil {
-		fmt.Printf("Some error %v\n", err)
-		return
-	}
-	go func() {
-		for {
-			_, _, err := ser.ReadFromUDP(p)
-			if string(p)[:6] == "reload" {
-				scan()
-				fmt.Println("Reloaded Confs")
-				ser.Close()
-				break
-			}
-
-			if string(p)[:4] == "list" {
-				scan()
-				listServices()
-				ser.Close()
-				break
-			}
-
-			if err != nil {
-				fmt.Println(err)
-				continue
-			}
-		}
-	}()
+	makeUDP()
 
 	insecure := newServerConf(httpPort, http.HandlerFunc(forwardHTTP))
 	secure := newServerConf(tlsPort, http.HandlerFunc(forwardTLS))
@@ -88,6 +56,45 @@ func main() {
 	fmt.Println()
 
 	<-ctx.Done()
+}
+
+func makeUDP() {
+	p := make([]byte, 2048)
+	addr := net.UDPAddr{
+		Port: 9913,
+		IP:   net.ParseIP("127.0.0.1"),
+	}
+	ser, err := net.ListenUDP("udp", &addr)
+	if err != nil {
+		fmt.Printf("Some error %v\n", err)
+		return
+	}
+
+	go func() {
+		for {
+			_, _, err := ser.ReadFromUDP(p)
+			if string(p)[:6] == "reload" {
+				scan()
+				fmt.Println("Reloaded Confs")
+				ser.Close()
+				break
+			}
+
+			if string(p)[:4] == "list" {
+				scan()
+				listServices()
+				ser.Close()
+				break
+			}
+
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			break
+		}
+	}()
+	makeUDP()
 }
 
 type MyRoundTripper struct{}
