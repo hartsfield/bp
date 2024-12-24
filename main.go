@@ -89,7 +89,6 @@ func makeUDP() {
 			fmt.Println(err)
 		}
 	}()
-	fmt.Println("test")
 }
 
 type MyRoundTripper struct{}
