@@ -35,7 +35,7 @@ func main() {
 	log.SetOutput(f)
 	p := make([]byte, 2048)
 	addr := net.UDPAddr{
-		Port: 9213,
+		Port: 9913,
 		IP:   net.ParseIP("127.0.0.1"),
 	}
 	ser, err := net.ListenUDP("udp", &addr)
