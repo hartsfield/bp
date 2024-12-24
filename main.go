@@ -49,7 +49,7 @@ func main() {
 			if string(p)[:6] == "reload" {
 				scan()
 				fmt.Println("Reloaded Confs")
-				break
+				ser.Close()
 			}
 
 			if err != nil {
