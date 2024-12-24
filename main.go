@@ -48,7 +48,6 @@ func main() {
 			_, _, err := ser.ReadFromUDP(p)
 			if string(p)[:6] == "reload" {
 				scan()
-				serviceReload("hrtsfld.xyz")
 				fmt.Println("Reloaded Confs")
 				ser.Close()
 				break
@@ -107,6 +106,11 @@ func makeProxy(s *serviceConf) *serviceConf {
 		FlushInterval: 0,
 		// FlushInterval: -1,
 		Transport: &MyRoundTripper{},
+		ModifyResponse: func(res *http.Response) error {
+			res.Header.Add("Access-Control-Allow-Origin", "*")
+			res.Header.Add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+			return nil
+		},
 	}
 	return s
 }
