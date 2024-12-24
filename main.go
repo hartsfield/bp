@@ -90,6 +90,7 @@ func makeUDP() {
 			fmt.Println(err)
 		}
 	}()
+	fmt.Println("test")
 	makeUDP()
 }
 
