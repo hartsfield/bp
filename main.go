@@ -71,18 +71,17 @@ func makeUDP() {
 	}
 
 	go func() {
+		defer ser.Close()
+		defer makeUDP()
 		_, _, err := ser.ReadFromUDP(p)
 		if string(p)[:6] == "reload" {
 			scan()
 			fmt.Println("Reloaded Confs")
-			ser.Close()
 			return
 		}
 
 		if string(p)[:4] == "list" {
-			scan()
 			listServices()
-			ser.Close()
 			return
 		}
 
@@ -91,7 +90,6 @@ func makeUDP() {
 		}
 	}()
 	fmt.Println("test")
-	makeUDP()
 }
 
 type MyRoundTripper struct{}
