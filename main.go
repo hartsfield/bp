@@ -71,27 +71,23 @@ func makeUDP() {
 	}
 
 	go func() {
-		for {
-			_, _, err := ser.ReadFromUDP(p)
-			if string(p)[:6] == "reload" {
-				scan()
-				fmt.Println("Reloaded Confs")
-				ser.Close()
-				break
-			}
+		_, _, err := ser.ReadFromUDP(p)
+		if string(p)[:6] == "reload" {
+			scan()
+			fmt.Println("Reloaded Confs")
+			ser.Close()
+			return
+		}
 
-			if string(p)[:4] == "list" {
-				scan()
-				listServices()
-				ser.Close()
-				break
-			}
+		if string(p)[:4] == "list" {
+			scan()
+			listServices()
+			ser.Close()
+			return
+		}
 
-			if err != nil {
-				fmt.Println(err)
-				continue
-			}
-			break
+		if err != nil {
+			fmt.Println(err)
 		}
 	}()
 	makeUDP()
