@@ -65,8 +65,6 @@ func main() {
 				fmt.Println(err)
 				continue
 			}
-			ser.Close()
-			break
 		}
 	}()
 
