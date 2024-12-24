@@ -123,9 +123,9 @@ func makeProxy(s *serviceConf) *serviceConf {
 }
 
 func listServices() {
-	for _, s := range pc.Services {
-		if !strings.Contains(s.App.DomainName, "www.") {
-			fmt.Println(s.App.DomainName)
+	for s := range pc.Services {
+		if !strings.Contains(s, "www.") {
+			fmt.Println(s)
 		}
 	}
 }
