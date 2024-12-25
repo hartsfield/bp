@@ -53,10 +53,10 @@ func startServices() {
 		b, err := os.ReadFile(dir.Name() + "/bolt.conf.local")
 		if err != nil {
 			log.Println(err)
-			break
+		} else {
+			s := string(b)
+			com := strings.SplitAfter(s, "command\": \"")[1]
+			fmt.Println(strings.Split("go build -o "+com, " "))
 		}
-		s := string(b)
-		com := strings.SplitAfter(s, "command\": \"")[1]
-		fmt.Println(strings.Split("go build -o "+com, " "))
 	}
 }
