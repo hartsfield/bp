@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -48,51 +47,44 @@ func main() {
 	fmt.Println()
 	fmt.Println("Services:")
 	fmt.Println()
-	for s, v := range pc.Services {
-		if !strings.Contains(s, "www.") {
-			fmt.Println("  ->", v.App.Port, s)
-			// fmt.Println(localCommand(strings.Split("go build /home/john/live/"+s+" -o /home/john/bin/"+s, " ")))
-			// go fmt.Println(localCommand([]string{s}))
-
-		}
-	}
+	listServices()
 	fmt.Println()
 
 	<-ctx.Done()
 }
 
-func makeUDP() {
-	p := make([]byte, 2048)
-	addr := net.UDPAddr{
-		Port: 9914,
-		IP:   net.ParseIP("127.0.0.1"),
-	}
-	ser, err := net.ListenUDP("udp", &addr)
-	if err != nil {
-		fmt.Printf("Some error %v\n", err)
-		return
-	}
+// func makeUDP() {
+// 	p := make([]byte, 2048)
+// 	addr := net.UDPAddr{
+// 		Port: 9914,
+// 		IP:   net.ParseIP("127.0.0.1"),
+// 	}
+// 	ser, err := net.ListenUDP("udp", &addr)
+// 	if err != nil {
+// 		fmt.Printf("Some error %v\n", err)
+// 		return
+// 	}
 
-	go func() {
-		defer ser.Close()
-		defer makeUDP()
-		_, _, err := ser.ReadFromUDP(p)
-		if string(p)[:6] == "reload" {
-			scan()
-			fmt.Println("Reloaded Confs")
-			return
-		}
+// 	go func() {
+// 		defer ser.Close()
+// 		defer makeUDP()
+// 		_, _, err := ser.ReadFromUDP(p)
+// 		if string(p)[:6] == "reload" {
+// 			scan()
+// 			fmt.Println("Reloaded Confs")
+// 			return
+// 		}
 
-		if string(p)[:4] == "list" {
-			listServices()
-			return
-		}
+// 		if string(p)[:4] == "list" {
+// 			listServices()
+// 			return
+// 		}
 
-		if err != nil {
-			fmt.Println(err)
-		}
-	}()
-}
+// 		if err != nil {
+// 			fmt.Println(err)
+// 		}
+// 	}()
+// }
 
 type MyRoundTripper struct{}
 
