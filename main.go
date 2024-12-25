@@ -39,7 +39,7 @@ func main() {
 	for s, v := range pc.Services {
 		if !strings.Contains(s, "www.") {
 			fmt.Println("  ->", v.App.Port, s)
-			com := strings.Split("go build /home/john/live/"+s+"/* -o /home/john/live/"+s+"/"+s, " ")
+			com := strings.Split("go build /home/john/live/"+s+"/ -o /home/john/live/"+s+"/"+s, " ")
 			fmt.Println(com)
 			fmt.Println(localCommand(com))
 		}
