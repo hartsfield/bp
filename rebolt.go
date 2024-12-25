@@ -41,6 +41,10 @@ func localCommand(command []string) string {
 	if err != nil {
 		log.Println("local command error: ", err, string(o))
 	}
+	err = cmd.Process.Release()
+	if err != nil {
+		log.Println(err)
+	}
 	// fmt.Println(cmd.String(), string(o))
 	return string(o)
 }
