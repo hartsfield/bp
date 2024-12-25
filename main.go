@@ -34,7 +34,7 @@ func main() {
 	defer f.Close()
 	log.SetOutput(f)
 
-	makeUDP()
+	// makeUDP()
 
 	insecure := newServerConf(httpPort, http.HandlerFunc(forwardHTTP))
 	secure := newServerConf(tlsPort, http.HandlerFunc(forwardTLS))
