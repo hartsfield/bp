@@ -56,7 +56,7 @@ func startServices() {
 			log.Println(err)
 		} else {
 			s := string(b)
-			com := strings.SplitAfter(s, "command\": \"")[1]
+			com := strings.SplitAfter(strings.SplitAfter(s, "command\": \"")[1], "\"")[0]
 			fmt.Println(strings.Split("go build -o "+com, " "))
 		}
 	}
