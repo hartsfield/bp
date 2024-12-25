@@ -41,7 +41,7 @@ func main() {
 			fmt.Println("  ->", v.App.Port, s)
 			com := strings.Split("go build -C /home/john/live/"+s+"/ -o "+s, " ")
 			fmt.Println(com)
-			fmt.Println(localCommand(com))
+			fmt.Println(localCommand(com, false))
 			fmt.Println(localCommand([]string{"mv", "/home/john/live/" + s + "/" + s, "/home/john/bin/"}, false))
 			fmt.Println(localCommand([]string{"cd", "/home/john/live/" + s}, false))
 			fmt.Println(localCommand([]string{s}, true))
