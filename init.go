@@ -73,11 +73,11 @@ var (
 func init() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	pc.Services = make(map[string]*serviceConf)
-	if len(os.Args) > 1 {
-		if os.Args[1] == "rebolt" {
-			rebolt()
-		}
-	}
+	// if len(os.Args) > 1 {
+	// 	if os.Args[1] == "rebolt" {
+	// 		rebolt()
+	// 	}
+	// }
 	proxyConf()
 	scan()
 	fullchain = pc.CertDir + pc.TlsCerts.Fullchain

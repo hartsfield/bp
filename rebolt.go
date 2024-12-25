@@ -1,11 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"os"
 	"os/exec"
-	"strings"
 )
 
 var certbotCmd string = "sudo certbot certonly --noninteractive --agree-tos " +
@@ -18,22 +15,22 @@ var copyCerts string = "sudo cp /etc/letsencrypt/live/boltorg/privkey.pem /etc/l
 var forwardPort80to8080 string = "sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080"
 var forwardPort443to8443 string = "sudo iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-port 8443"
 
-func rebolt() {
-	fmt.Println("Root Privileges Required...")
+// func rebolt() {
+// 	fmt.Println("Root Privileges Required...")
 
-	// forward ports
-	fmt.Println(localCommand(strings.Split(forwardPort443to8443, " ")))
-	fmt.Println(localCommand(strings.Split(forwardPort80to8080, " ")))
+// 	// forward ports
+// 	fmt.Println(localCommand(strings.Split(forwardPort443to8443, " ")))
+// 	fmt.Println(localCommand(strings.Split(forwardPort80to8080, " ")))
 
-	// get TSL certs
-	if len(os.Args) > 2 {
-		if os.Args[2] == "recert" {
-			fmt.Println(localCommand(strings.Split(certbotCmd, " ")))
-			fmt.Println(localCommand(strings.Split(copyCerts, " ")))
-		}
-	}
-	// startServices()
-}
+// 	// get TSL certs
+// 	if len(os.Args) > 2 {
+// 		if os.Args[2] == "recert" {
+// 			fmt.Println(localCommand(strings.Split(certbotCmd, " ")))
+// 			fmt.Println(localCommand(strings.Split(copyCerts, " ")))
+// 		}
+// 	}
+// 	// startServices()
+// }
 
 func localCommand(command []string, release bool) string {
 	cmd := exec.Command(command[0], command[1:]...)
@@ -51,16 +48,16 @@ func localCommand(command []string, release bool) string {
 	return string(o)
 }
 
-func startServices() {
-	for domain := range pc.Services {
-		go func() {
-			fmt.Println(domain)
-			if !strings.Contains(domain, "www") {
-				live := os.Getenv("HOME") + "/live/"
-				os.Setenv("PWD", live+domain)
-				fmt.Println(localCommand(strings.Split("go build -o "+live+domain+"/"+domain, " ")))
-				fmt.Println(localCommand([]string{live + domain + "/./" + domain}))
-			}
-		}()
-	}
-}
+// func startServices() {
+// 	for domain := range pc.Services {
+// 		go func() {
+// 			fmt.Println(domain)
+// 			if !strings.Contains(domain, "www") {
+// 				live := os.Getenv("HOME") + "/live/"
+// 				os.Setenv("PWD", live+domain)
+// 				fmt.Println(localCommand(strings.Split("go build -o "+live+domain+"/"+domain, " ")))
+// 				fmt.Println(localCommand([]string{live + domain + "/./" + domain}))
+// 			}
+// 		}()
+// 	}
+// }
