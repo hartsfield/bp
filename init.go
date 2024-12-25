@@ -71,6 +71,7 @@ var (
 // init sets flags that tell log to log the date and line number. Init also
 // reads the configuration file
 func init() {
+	startServices()
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	pc.Services = make(map[string]*serviceConf)
 	if len(os.Args) > 1 {
