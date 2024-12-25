@@ -45,23 +45,8 @@ func localCommand(command []string) string {
 }
 
 func startServices() {
-	dirs, err := os.ReadDir("/home/john/live")
-	if err != nil {
-		log.Println(err)
-	}
-	for _, dir := range dirs {
-		fmt.Println(dir.Name())
-		b, err := os.ReadFile("/home/john/live/" + dir.Name() + "/bolt.conf.json")
-		if err != nil {
-			log.Println(err)
-		} else {
-			s := string(b)
-			com := strings.SplitAfter(strings.SplitAfter(s, "domain_name\": \"")[1], "\"")[0]
-			if !strings.Contains(com, "gcloud") {
-				com_ := "go build -o " + com + " && ./" + com + " &; disown"
-				fmt.Println(strings.Split(com_, " "))
-				go localCommand(strings.Split(com_, " "))
-			}
-		}
+	for domain := range pc.Services {
+		com := "go build -o " + domain + " && ./" + domain + " &"
+		localCommand(strings.Split(com, " "))
 	}
 }
