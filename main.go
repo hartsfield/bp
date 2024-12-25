@@ -122,11 +122,11 @@ func makeProxy(s *serviceConf) *serviceConf {
 		FlushInterval: 0,
 		// FlushInterval: -1,
 		Transport: &MyRoundTripper{},
-		ModifyResponse: func(res *http.Response) error {
-			res.Header.Add("Access-Control-Allow-Origin", "*")
-			res.Header.Add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-			return nil
-		},
+		// ModifyResponse: func(res *http.Response) error {
+		// 	res.Header.Add("Access-Control-Allow-Origin", "*")
+		// 	res.Header.Add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+		// 	return nil
+		// },
 	}
 	return s
 }
