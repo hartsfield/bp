@@ -50,6 +50,7 @@ func startServices() {
 			com := "go build -o " + domain
 			fmt.Println("Running: ", com)
 			fmt.Println(localCommand(strings.Split(com, " ")))
+			fmt.Println(localCommand(strings.Split("mv "+domain+" ~/bin", " ")))
 			fmt.Println(localCommand([]string{domain}))
 		}
 	}
