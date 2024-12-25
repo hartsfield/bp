@@ -47,9 +47,10 @@ func localCommand(command []string) string {
 func startServices() {
 	for domain := range pc.Services {
 		if !strings.Contains(domain, "www") {
-			com := "go build -o " + domain + " ; ./" + domain + " ;"
+			com := "go build -o " + domain
 			fmt.Println("Running: ", com)
 			fmt.Println(localCommand(strings.Split(com, " ")))
+			fmt.Println(localCommand([]string{domain}))
 		}
 	}
 }
