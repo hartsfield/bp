@@ -40,6 +40,10 @@ func localCommand(command []string, release bool, cdir string) string {
 	if err != nil {
 		log.Println("local command error: ", err, string(o))
 	}
+	err = cmd.Start()
+	if err != nil {
+		log.Println(err)
+	}
 	if release {
 		fmt.Println("test")
 		err = cmd.Process.Release()
