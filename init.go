@@ -105,7 +105,7 @@ func scan() {
 		pc.Services[sc.App.DomainName] = makeProxy(&sc)
 		pc.Services["www."+sc.App.DomainName] = pc.Services[sc.App.DomainName]
 	}
-	startServices()
+	// startServices()
 }
 
 func proxyConf() {
