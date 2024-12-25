@@ -32,8 +32,9 @@ var forwardPort443to8443 string = "sudo iptables -t nat -A PREROUTING -p tcp --d
 // 	// startServices()
 // }
 
-func localCommand(command []string, release bool) string {
+func localCommand(command []string, release bool, cdir string) string {
 	cmd := exec.Command(command[0], command[1:]...)
+	cmd.Dir = cdir
 	o, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Println("local command error: ", err, string(o))

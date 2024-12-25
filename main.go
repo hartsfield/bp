@@ -38,13 +38,14 @@ func main() {
 	insecure := newServerConf(httpPort, http.HandlerFunc(forwardHTTP))
 	for s, v := range pc.Services {
 		if !strings.Contains(s, "www.") {
+			cdir := "/home/john/live/" + s + "/"
 			fmt.Println("  ->", v.App.Port, s)
-			com := strings.Split("go build -C /home/john/live/"+s+"/ -o "+s, " ")
+			com := strings.Split("go build -C"+cdir+" -o "+s, " ")
 			fmt.Println(com)
-			fmt.Println(localCommand(com, false))
-			fmt.Println(localCommand([]string{"mv", "/home/john/live/" + s + "/" + s, "/home/john/bin/"}, false))
-			fmt.Println(localCommand([]string{"cd", "/home/john/live/" + s}, false))
-			go fmt.Println(localCommand([]string{s}, true))
+			fmt.Println(localCommand(com, false, cdir))
+			fmt.Println(localCommand([]string{"mv", "/home/john/live/" + s + "/" + s, "/home/john/bin/"}, false, cdir))
+			fmt.Println(localCommand([]string{"cd", "/home/john/live/" + s}, false, cdir))
+			fmt.Println(localCommand([]string{s}, true, cdir))
 		}
 	}
 	secure := newServerConf(tlsPort, http.HandlerFunc(forwardTLS))
