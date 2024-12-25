@@ -48,9 +48,9 @@ func localCommand(command []string) string {
 func startServices() {
 	for domain := range pc.Services {
 		if !strings.Contains(domain, "www") {
-			home := os.Getenv("HOME")
-			os.Setenv("PWD", home+"live/"+domain)
-			fmt.Println(localCommand(strings.Split("go build -o "+domain, " ")))
+			live := os.Getenv("HOME") + "/live/"
+			os.Setenv("PWD", live+domain)
+			fmt.Println(localCommand(strings.Split("go build -o "+live+domain+"/"+domain, " ")))
 			fmt.Println(localCommand([]string{"./" + domain + " &"}))
 		}
 	}
