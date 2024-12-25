@@ -53,6 +53,7 @@ func startServices() {
 		b, err := os.ReadFile(dir.Name() + "/bolt.conf.local")
 		if err != nil {
 			log.Println(err)
+			break
 		}
 		s := string(b)
 		com := strings.SplitAfter(s, "command\": \"")[1]
