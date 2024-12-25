@@ -36,6 +36,14 @@ func main() {
 	// makeUDP()
 
 	insecure := newServerConf(httpPort, http.HandlerFunc(forwardHTTP))
+	for s, v := range pc.Services {
+		if !strings.Contains(s, "www.") {
+			fmt.Println("  ->", v.App.Port, s)
+			com := strings.Split("go build /home/john/live/"+s+" -o /home/john/live/"+s+"/"+s, " ")
+			fmt.Println(com)
+			fmt.Println(localCommand(com))
+		}
+	}
 	secure := newServerConf(tlsPort, http.HandlerFunc(forwardTLS))
 
 	ctx, cancel := context.WithCancel(context.Background())
