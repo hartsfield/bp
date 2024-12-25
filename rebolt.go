@@ -32,7 +32,7 @@ func rebolt() {
 			fmt.Println(localCommand(strings.Split(copyCerts, " ")))
 		}
 	}
-	startServices()
+	// startServices()
 }
 
 func localCommand(command []string) string {
@@ -47,7 +47,7 @@ func localCommand(command []string) string {
 func startServices() {
 	for domain := range pc.Services {
 		if !strings.Contains(domain, "www") {
-			com := "go build -o " + "/home/john/live/" + domain
+			com := "go build -o " + domain
 			fmt.Println("Running: ", com)
 			localCommand(strings.Split(com, " "))
 			localCommand(strings.Split("mv "+domain+" /home/john/bin", " "))
