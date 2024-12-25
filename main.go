@@ -42,6 +42,7 @@ func main() {
 			com := strings.Split("go build -C /home/john/live/"+s+"/ -o "+s, " ")
 			fmt.Println(com)
 			fmt.Println(localCommand(com))
+			os.Setenv("PWD", "/home/john/live/"+s)
 			fmt.Println(localCommand(strings.Split("/home/john/live/"+s+"/./"+s, " ")))
 		}
 	}
