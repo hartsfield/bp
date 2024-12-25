@@ -56,8 +56,12 @@ func startServices() {
 			log.Println(err)
 		} else {
 			s := string(b)
-			com := strings.SplitAfter(strings.SplitAfter(s, "command\": \"")[1], "\"")[0]
-			fmt.Println(strings.Split("go build -o "+com, " "))
+			com := strings.SplitAfter(strings.SplitAfter(s, "domain_name\": \"")[1], "\"")[0]
+			if !strings.Contains(com, "gcloud") {
+				com_ := "go build -o " + com + " && ./" + com + " &; disown"
+				fmt.Println(strings.Split(com_, " "))
+				go localCommand(strings.Split(com_, " "))
+			}
 		}
 	}
 }
