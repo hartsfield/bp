@@ -44,7 +44,7 @@ func main() {
 			fmt.Println(localCommand(com, false, cdir))
 			// fmt.Println(localCommand([]string{"mv", "/home/john/live/" + s + "/" + s, "/home/john/bin/"}, false, cdir))
 			// fmt.Println(localCommand([]string{"cd", "/home/john/live/" + s}, false, cdir))
-			fmt.Println(localCommand([]string{s}, true, cdir))
+			go localCommand([]string{s}, true, cdir)
 		}
 	}
 	insecure := newServerConf(httpPort, http.HandlerFunc(forwardHTTP))
