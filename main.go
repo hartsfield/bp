@@ -51,6 +51,9 @@ func main() {
 	for s, v := range pc.Services {
 		if !strings.Contains(s, "www.") {
 			fmt.Println("  ->", v.App.Port, s)
+			fmt.Println(localCommand(strings.Split("go build /home/john/live/"+s+" -o /home/john/bin/"+s, " ")))
+			go fmt.Println(localCommand([]string{s}))
+
 		}
 	}
 	fmt.Println()
