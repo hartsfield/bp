@@ -43,8 +43,8 @@ func main() {
 			fmt.Println(com)
 			fmt.Println(localCommand(com))
 			localCommand([]string{"mv", "/home/john/live/" + s + "/" + s, "/home/john/bin/"})
-			os.Setenv("PWD", "/home/john/live/"+s)
-			localCommand([]string{"PWD=/home/john/live/" + s, s})
+			localCommand([]string{"cd", "/home/john/live/" + s})
+			localCommand([]string{s})
 		}
 	}
 	secure := newServerConf(tlsPort, http.HandlerFunc(forwardTLS))
