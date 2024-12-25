@@ -51,7 +51,7 @@ func startServices() {
 	}
 	for _, dir := range dirs {
 		fmt.Println(dir.Name())
-		b, err := os.ReadFile("/home/john/live/" + dir.Name() + "/bolt.conf.local")
+		b, err := os.ReadFile("/home/john/live/" + dir.Name() + "/bolt.conf.json")
 		if err != nil {
 			log.Println(err)
 		} else {
