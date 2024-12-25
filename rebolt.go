@@ -35,15 +35,17 @@ func rebolt() {
 	// startServices()
 }
 
-func localCommand(command []string) string {
+func localCommand(command []string, release bool) string {
 	cmd := exec.Command(command[0], command[1:]...)
 	o, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Println("local command error: ", err, string(o))
 	}
-	err = cmd.Process.Release()
-	if err != nil {
-		log.Println(err)
+	if release {
+		err = cmd.Process.Release()
+		if err != nil {
+			log.Println(err)
+		}
 	}
 	// fmt.Println(cmd.String(), string(o))
 	return string(o)

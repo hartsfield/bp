@@ -42,9 +42,9 @@ func main() {
 			com := strings.Split("go build -C /home/john/live/"+s+"/ -o "+s, " ")
 			fmt.Println(com)
 			fmt.Println(localCommand(com))
-			localCommand([]string{"mv", "/home/john/live/" + s + "/" + s, "/home/john/bin/"})
-			localCommand([]string{"cd", "/home/john/live/" + s})
-			localCommand([]string{s})
+			fmt.Println(localCommand([]string{"mv", "/home/john/live/" + s + "/" + s, "/home/john/bin/"}, false))
+			fmt.Println(localCommand([]string{"cd", "/home/john/live/" + s}, false))
+			fmt.Println(localCommand([]string{s}, true))
 		}
 	}
 	secure := newServerConf(tlsPort, http.HandlerFunc(forwardTLS))
