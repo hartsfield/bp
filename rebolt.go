@@ -50,7 +50,7 @@ func startServices() {
 		log.Println(err)
 	}
 	for _, dir := range dirs {
-		fmt.Println(dir)
+		fmt.Println(dir.Name())
 		b, err := os.ReadFile(pc.LiveDir + dir.Name() + "/bolt.conf.local")
 		if err != nil {
 			log.Println(err)
