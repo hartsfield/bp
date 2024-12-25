@@ -51,7 +51,7 @@ func startServices() {
 			live := os.Getenv("HOME") + "/live/"
 			os.Setenv("PWD", live+domain)
 			fmt.Println(localCommand(strings.Split("go build -o "+live+domain+"/"+domain, " ")))
-			fmt.Println(localCommand([]string{live + domain + "/./" + domain + " &"}))
+			fmt.Println(localCommand([]string{live + domain + "/./" + domain}))
 		}
 	}
 }
