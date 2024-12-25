@@ -71,7 +71,6 @@ var (
 // init sets flags that tell log to log the date and line number. Init also
 // reads the configuration file
 func init() {
-	startServices()
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	pc.Services = make(map[string]*serviceConf)
 	if len(os.Args) > 1 {
@@ -106,6 +105,7 @@ func scan() {
 		pc.Services[sc.App.DomainName] = makeProxy(&sc)
 		pc.Services["www."+sc.App.DomainName] = pc.Services[sc.App.DomainName]
 	}
+	startServices()
 }
 
 func proxyConf() {
