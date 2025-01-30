@@ -79,7 +79,7 @@ func init() {
 	// 	}
 	// }
 	proxyConf()
-	scan()
+	// scan()
 	fullchain = pc.CertDir + pc.TlsCerts.Fullchain
 	privkey = pc.CertDir + pc.TlsCerts.Privkey
 	httpPort = pc.HttpPort
