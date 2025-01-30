@@ -33,21 +33,6 @@ func main() {
 	}
 	defer f.Close()
 	log.SetOutput(f)
-
-	// makeUDP()
-
-	// for s, v := range pc.Services {
-	// 	if !strings.Contains(s, "www.") {
-	// 		cdir := "/home/john/live/" + s + "/"
-	// 		fmt.Println("  ->", v.App.Port, s)
-	// 		com := strings.Split("go build -o "+s, " ")
-	// 		fmt.Println(com)
-	// 		fmt.Println(localCommand(com, false, cdir))
-	// 		// fmt.Println(localCommand([]string{"mv", "/home/john/live/" + s + "/" + s, "/home/john/bin/"}, false, cdir))
-	// 		// fmt.Println(localCommand([]string{"cd", "/home/john/live/" + s}, false, cdir))
-	// 		go localCommand([]string{s}, true, cdir)
-	// 	}
-	// }
 	insecure := newServerConf(httpPort, http.HandlerFunc(forwardHTTP))
 	secure := newServerConf(tlsPort, http.HandlerFunc(forwardTLS))
 
@@ -57,47 +42,12 @@ func main() {
 	go startHTTPServer(insecure)
 	go startTLSServer(secure)
 
-	fmt.Println()
-	fmt.Println("Services:")
-	fmt.Println()
+	fmt.Print("\nServices:\n\n")
 	listServices()
 	fmt.Println()
 
 	<-ctx.Done()
 }
-
-// func makeUDP() {
-// 	p := make([]byte, 2048)
-// 	addr := net.UDPAddr{
-// 		Port: 9914,
-// 		IP:   net.ParseIP("127.0.0.1"),
-// 	}
-// 	ser, err := net.ListenUDP("udp", &addr)
-// 	if err != nil {
-// 		fmt.Printf("Some error %v\n", err)
-// 		return
-// 	}
-
-// 	go func() {
-// 		defer ser.Close()
-// 		defer makeUDP()
-// 		_, _, err := ser.ReadFromUDP(p)
-// 		if string(p)[:6] == "reload" {
-// 			scan()
-// 			fmt.Println("Reloaded Confs")
-// 			return
-// 		}
-
-// 		if string(p)[:4] == "list" {
-// 			listServices()
-// 			return
-// 		}
-
-// 		if err != nil {
-// 			fmt.Println(err)
-// 		}
-// 	}()
-// }
 
 type MyRoundTripper struct{}
 
@@ -117,8 +67,7 @@ func makeProxy(s *serviceConf) *serviceConf {
 		Director: func(req *http.Request) {
 			req.Header.Add("X-Forwarded-Host", req.Host)
 			req.Header.Add("X-Origin-Host", u.Host)
-			req.Header.Add("Cache-Control", "max-age=31536000") // Cache for 1 hour
-			// req.Header.Add("Content-Encoding", "gzip")
+			req.Header.Add("Cache-Control", "max-age=31536000")
 			req.URL.Host = u.Host
 			req.URL.Scheme = "http"
 		},

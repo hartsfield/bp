@@ -63,6 +63,7 @@ func forwardTLS(w http.ResponseWriter, r *http.Request) {
 // re-writes the address and forwards the client to the the https website,
 // other wise it forwards it to the appropriate service
 func forwardHTTP(w http.ResponseWriter, r *http.Request) {
+	log.Println(r.RemoteAddr, r.Referer(), r.Method, r.Host, r.URL, r.Pattern, r.Proto, r.UserAgent())
 	if host, ok := pc.Services[r.Host]; ok {
 		if pc.Services[r.Host].App.TLSEnabled {
 			rHost := r.Host
@@ -76,7 +77,6 @@ func forwardHTTP(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, target, http.StatusTemporaryRedirect)
 			return
 		}
-		log.Println(r.RemoteAddr, r.Host, r.URL.String())
 		host.ReverseProxy.ServeHTTP(w, r)
 		return
 	}
@@ -85,7 +85,7 @@ func forwardHTTP(w http.ResponseWriter, r *http.Request) {
 
 // notFound is used If the user tries to visit a host that can't be found.
 func notFound(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.RemoteAddr, r.Host, r.URL.String())
+	log.Println(r.RemoteAddr, r.Referer(), r.Method, r.Host, r.URL, r.Pattern, r.Proto, r.UserAgent())
 	_, err := w.Write([]byte("coming soon"))
 	if err != nil {
 		log.Println(err)
