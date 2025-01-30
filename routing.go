@@ -6,6 +6,24 @@ import (
 	"time"
 )
 
+var hitCounterByIP map[string]*hit = make(map[string]*hit)
+
+type hit struct {
+	IP       string
+	Count    int
+	Requests []*remoteReq
+}
+type remoteReq struct {
+	Time      time.Time
+	Referer   string
+	Method    string
+	Host      string
+	URL       string
+	Pattern   string
+	Proto     string
+	UserAgent string
+}
+
 // newServerConf returns a new server configuration, and is used when
 // instantiating the servers that intercept HTTP/S traffic.
 func newServerConf(port string, hf http.HandlerFunc) *http.Server {
@@ -47,7 +65,7 @@ func startTLSServer(s *http.Server) {
 // enabled, it forwarss it to the HTTP server, otherwise it sends the client to
 // the 'not found' page.
 func forwardTLS(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.RemoteAddr, r.Referer(), r.Method, r.Host, r.URL, r.Pattern, r.Proto, r.UserAgent())
+	hitInfo(r)
 	if host, ok := pc.Services[r.Host]; ok {
 		if pc.Services[r.Host].App.TLSEnabled {
 			host.ReverseProxy.ServeHTTP(w, r)
@@ -59,11 +77,32 @@ func forwardTLS(w http.ResponseWriter, r *http.Request) {
 	notFound(w, r)
 }
 
+func hitInfo(r *http.Request) {
+	log.Println(r.RemoteAddr, r.Referer(), r.Method, r.Host, r.URL, r.Pattern, r.Proto, r.UserAgent())
+	rr := &remoteReq{
+		time.Now(),
+		r.Referer(),
+		r.Method,
+		r.Host,
+		r.URL.Host,
+		r.Pattern,
+		r.Proto,
+		r.UserAgent(),
+	}
+	if hitCounterByIP[r.RemoteAddr] == nil {
+		hitCounterByIP[r.RemoteAddr] = &hit{
+			r.RemoteAddr,
+			1,
+			[]*remoteReq{},
+		}
+	}
+	hitCounterByIP[r.RemoteAddr].Requests = append(hitCounterByIP[r.RemoteAddr].Requests, rr)
+}
+
 // forwardHTTP checks the host name of HTTP traffic, if TLS is enabled, it
 // re-writes the address and forwards the client to the the https website,
 // other wise it forwards it to the appropriate service
 func forwardHTTP(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.RemoteAddr, r.Referer(), r.Method, r.Host, r.URL, r.Pattern, r.Proto, r.UserAgent())
 	if host, ok := pc.Services[r.Host]; ok {
 		if pc.Services[r.Host].App.TLSEnabled {
 			rHost := r.Host
@@ -77,6 +116,7 @@ func forwardHTTP(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, target, http.StatusTemporaryRedirect)
 			return
 		}
+		hitInfo(r)
 		host.ReverseProxy.ServeHTTP(w, r)
 		return
 	}
@@ -85,8 +125,8 @@ func forwardHTTP(w http.ResponseWriter, r *http.Request) {
 
 // notFound is used If the user tries to visit a host that can't be found.
 func notFound(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.RemoteAddr, r.Referer(), r.Method, r.Host, r.URL, r.Pattern, r.Proto, r.UserAgent())
-	_, err := w.Write([]byte("coming soon"))
+	hitInfo(r)
+	_, err := w.Write([]byte("dreams --of=infinity && gift --of=eternity && offspring --of=UNLIMITED && TRANSCEND DESTINY %"))
 	if err != nil {
 		log.Println(err)
 	}

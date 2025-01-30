@@ -1,0 +1,5 @@
+2025/01/30 18:11:57 routing.go:55: open /home/john/tlsCerts/fullchain.pem: no such file or directory
+2025/01/30 18:13:13 routing.go:55: open /home/john/tlsCerts/fullchain.pem: no such file or directory
+2025/01/30 18:14:42 routing.go:55: open /home/john/tlsCerts/fullchain.pem: no such file or directory
+2025/01/30 18:15:05 routing.go:55: open /home/john/tlsCerts/fullchain.pem: no such file or directory
+2025/01/30 18:15:34 routing.go:55: open /home/john/tlsCerts/fullchain.pem: no such file or directory

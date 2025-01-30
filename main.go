@@ -27,9 +27,13 @@ import (
 // NOTE: Make sure these files have the correct permissions, you likely copied
 // them from root.
 func main() {
-	f, err := os.OpenFile("/home/john/bp/log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	plp := os.Getenv("proxLogPath")
+	if plp == "" {
+		plp = "./log.txt"
+	}
+	f, err := os.OpenFile(plp, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
 	if err != nil {
-		log.Fatalf("error opening file: %v", err)
+		log.Printf("error opening file: %v", err)
 	}
 	defer f.Close()
 	log.SetOutput(f)

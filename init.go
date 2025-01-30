@@ -73,11 +73,6 @@ var (
 func init() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	pc.Services = make(map[string]*serviceConf)
-	// if len(os.Args) > 1 {
-	// 	if os.Args[1] == "rebolt" {
-	// 		rebolt()
-	// 	}
-	// }
 	proxyConf()
 	scan()
 	fullchain = pc.CertDir + pc.TlsCerts.Fullchain
@@ -89,7 +84,8 @@ func init() {
 func scan() {
 	dir, err := os.ReadDir(pc.LiveDir)
 	if err != nil {
-		log.Println(err)
+		log.Println("bp couldn't find the live directory, does bolt.conf.json exist and is it configured properly?", err, "\nContinuing on...")
+		return
 	}
 	for _, d := range dir {
 		b, err := os.ReadFile(pc.LiveDir + d.Name() + "/bolt.conf.json")
