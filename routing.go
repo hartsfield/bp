@@ -78,7 +78,7 @@ func forwardTLS(w http.ResponseWriter, r *http.Request) {
 }
 
 func hitInfo(r *http.Request) {
-	log.Println(r.RemoteAddr, r.Referer(), r.Method, r.Host, r.URL, r.Pattern, r.Proto, r.UserAgent())
+	log.Println("<IP:"+r.RemoteAddr, r.Referer(), r.Method, "<HOST:"+r.Host, "<URL:"+r.URL.String(), r.Pattern, r.Proto, "<UA:"+r.UserAgent())
 	rr := &remoteReq{
 		time.Now(),
 		r.Referer(),

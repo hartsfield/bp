@@ -106,7 +106,7 @@ func scan() {
 
 func proxyConf() {
 	if len(confPath) < 1 {
-		confPath = "/home/john/bp/prox.conf"
+		confPath = os.Getenv("HOME") + "/bp/prox.conf"
 	}
 	file, err := os.ReadFile(confPath)
 	if err != nil {
