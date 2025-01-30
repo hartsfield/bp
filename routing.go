@@ -47,10 +47,9 @@ func startTLSServer(s *http.Server) {
 // enabled, it forwarss it to the HTTP server, otherwise it sends the client to
 // the 'not found' page.
 func forwardTLS(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.Host, r.URL)
+	log.Println(r.RemoteAddr, r.Referer(), r.Method, r.Host, r.URL, r.Pattern, r.Proto, r.UserAgent())
 	if host, ok := pc.Services[r.Host]; ok {
 		if pc.Services[r.Host].App.TLSEnabled {
-			log.Println(r.RemoteAddr, r.Host, r.URL.String())
 			host.ReverseProxy.ServeHTTP(w, r)
 			return
 		}
