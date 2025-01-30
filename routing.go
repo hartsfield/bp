@@ -15,6 +15,7 @@ func newServerConf(port string, hf http.HandlerFunc) *http.Server {
 		ReadHeaderTimeout: 10 * time.Second,
 		WriteTimeout:      20 * time.Second,
 		IdleTimeout:       10 * time.Second,
+		MaxHeaderBytes:    0,
 	}
 }
 
@@ -46,6 +47,7 @@ func startTLSServer(s *http.Server) {
 // enabled, it forwarss it to the HTTP server, otherwise it sends the client to
 // the 'not found' page.
 func forwardTLS(w http.ResponseWriter, r *http.Request) {
+	log.Println(r.Host, r.URL)
 	if host, ok := pc.Services[r.Host]; ok {
 		if pc.Services[r.Host].App.TLSEnabled {
 			log.Println(r.RemoteAddr, r.Host, r.URL.String())

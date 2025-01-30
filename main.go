@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 )
 
 // When restarting the server, you can use iptables to redirect traffic from
@@ -116,12 +117,13 @@ func makeProxy(s *serviceConf) *serviceConf {
 		Director: func(req *http.Request) {
 			req.Header.Add("X-Forwarded-Host", req.Host)
 			req.Header.Add("X-Origin-Host", u.Host)
+			req.Header.Add("Cache-Control", "max-age=31536000") // Cache for 1 hour
+			// req.Header.Add("Content-Encoding", "gzip")
 			req.URL.Host = u.Host
 			req.URL.Scheme = "http"
 		},
-		FlushInterval: 0,
-		// FlushInterval: -1,
-		Transport: &MyRoundTripper{},
+		FlushInterval: 100 * time.Millisecond,
+		Transport:     &MyRoundTripper{},
 		ModifyResponse: func(res *http.Response) error {
 			res.Header.Add("Access-Control-Allow-Origin", "*")
 			res.Header.Add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
