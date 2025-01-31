@@ -87,14 +87,11 @@ func printLogJSON() {
 		log.Println(err)
 	}
 	fmt.Println(string(b))
-	// b, err := json.Marshal(hitCounterByIP)
-	// if err != nil {
-	// 	log.Println(err)
-	// }
-	// err = os.WriteFile("logject.json", b, 0666)
-	// if err != nil {
-	// 	log.Println(err)
-	// }
+	err = os.WriteFile("logject.json", b, 0666)
+	if err != nil {
+		log.Println(err)
+	}
+	log.Println("Wrote to: logject.json")
 
 }
 
