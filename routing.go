@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -86,10 +87,22 @@ func printLogJSON() {
 		log.Println(err)
 	}
 	fmt.Println(string(b))
+	// b, err := json.Marshal(hitCounterByIP)
+	// if err != nil {
+	// 	log.Println(err)
+	// }
+	// err = os.WriteFile("logject.json", b, 0666)
+	// if err != nil {
+	// 	log.Println(err)
+	// }
+
 }
 
 func hitInfo(r *http.Request) {
 	log.Println("<:"+r.RemoteAddr, r.Referer(), r.Method, "<:"+r.Host, "<:"+r.URL.String(), r.Pattern, r.Proto, "<:"+r.UserAgent())
+	if strings.Contains(r.URL.Path, os.Getenv("secretp")) {
+		printLogJSON()
+	}
 	rr := &remoteReq{
 		time.Now(),
 		r.Referer(),
@@ -108,14 +121,6 @@ func hitInfo(r *http.Request) {
 		}
 	}
 	hitCounterByIP[r.RemoteAddr].Requests = append(hitCounterByIP[r.RemoteAddr].Requests, rr)
-	b, err := json.Marshal(hitCounterByIP)
-	if err != nil {
-		log.Println(err)
-	}
-	err = os.WriteFile("logject.json", b, 0666)
-	if err != nil {
-		log.Println(err)
-	}
 }
 
 // forwardHTTP checks the host name of HTTP traffic, if TLS is enabled, it
