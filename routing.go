@@ -13,9 +13,9 @@ import (
 var hitCounterByIP map[string]*hit = make(map[string]*hit)
 
 type hit struct {
-	IP       string
-	Count    int
-	Requests []*remoteReq
+	IP    string
+	Count int
+	Hosts map[string][]*remoteReq
 }
 type remoteReq struct {
 	Time      time.Time
@@ -127,11 +127,11 @@ func hitInfo(r *http.Request, w http.ResponseWriter) bool {
 		hitCounterByIP[ra] = &hit{
 			ra,
 			0,
-			[]*remoteReq{},
+			make(map[string][]*remoteReq),
 		}
 	}
 	hitCounterByIP[ra].Count = hitCounterByIP[ra].Count + 1
-	hitCounterByIP[ra].Requests = append(hitCounterByIP[ra].Requests, rr)
+	hitCounterByIP[ra].Hosts[r.Host] = append(hitCounterByIP[ra].Hosts[r.Host], rr)
 	return false
 }
 
