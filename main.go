@@ -27,39 +27,24 @@ import (
 // NOTE: Make sure these files have the correct permissions, you likely copied
 // them from root.
 func main() {
-	proxyConf()
-	scan_err := scan()
+	f, err := os.OpenFile("/home/john/bp/log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	defer f.Close()
+	log.SetOutput(f)
+	insecure := newServerConf(httpPort, http.HandlerFunc(forwardHTTP))
+	secure := newServerConf(tlsPort, http.HandlerFunc(forwardTLS))
 
-	listServices()
 	ctx, cancel := context.WithCancel(context.Background())
 	globalHalt = cancel
 
-	insecure := newServerConf(httpPort, http.HandlerFunc(forwardHTTP))
 	go startHTTPServer(insecure)
-
-	if len(os.Args) > 1 {
-		if os.Args[1] == "jlog" {
-			printLogJSON()
-			os.Exit(0)
-		}
-		if os.Args[1] == "test" {
-			fmt.Println("\nYOU ARE IN TESTING MODE! BEWARE")
-			fmt.Println("\nYOU ARE IN TESTING MODE! BEWARE")
-			fmt.Println("\nYOU ARE IN TESTING MODE! BEWARE")
-			fmt.Println("\nYOU ARE IN TESTING MODE! BEWARE")
-			os.Exit(0)
-		}
-	}
-
-	if scan_err != nil {
-		// log.Fatalln("EXITING \nDoes bolt.conf.json exist and is it configured properly?", scan_err)
-	}
-
-	secure := newServerConf(tlsPort, http.HandlerFunc(forwardTLS))
 	go startTLSServer(secure)
 
-	fmt.Println("log:", logPath)
-	fmt.Println("conf:", confPath)
+	fmt.Print("\nServices:\n\n")
+	listServices()
+	fmt.Println()
 
 	<-ctx.Done()
 }
@@ -98,15 +83,6 @@ func makeProxy(s *serviceConf) *serviceConf {
 }
 
 func listServices() {
-	// if len(pc.Services) == 0 {
-	// 	fmt.Println("\n\nDidn't detect any services in live dir... check the following:")
-	// 	fmt.Println("prox.conf:", confPath)
-	// 	fmt.Println("live dir:", pc.LiveDir)
-	// 	fmt.Println()
-	// 	return
-	// }
-
-	fmt.Print("\nServices:\n\n")
 	for s := range pc.Services {
 		if !strings.Contains(s, "www.") {
 			fmt.Println(s)
