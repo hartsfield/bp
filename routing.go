@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -90,8 +91,7 @@ func printLogJSON() {
 	if err != nil {
 		log.Println(err)
 	}
-	log.Println("Wrote to: logject.json")
-
+	fmt.Println("Wrote to: logject.json")
 }
 
 func hitInfo(r *http.Request) {

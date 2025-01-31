@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http/httputil"
 	"os"
@@ -68,6 +69,18 @@ var (
 	pc         config = config{}
 )
 
+func getHits() {
+	b, err := os.ReadFile("logject.txt")
+	if err != nil {
+		log.Println(err)
+	}
+	err = json.Unmarshal(b, &hitCounterByIP)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(len(hitCounterByIP), " hits in logject.txt")
+}
+
 // init sets flags that tell log to log the date and line number. Init also
 // reads the configuration file
 func init() {
@@ -80,6 +93,7 @@ func init() {
 	// }
 	proxyConf()
 	scan()
+	getHits()
 	fullchain = pc.CertDir + pc.TlsCerts.Fullchain
 	privkey = pc.CertDir + pc.TlsCerts.Privkey
 	httpPort = pc.HttpPort
