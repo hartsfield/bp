@@ -110,7 +110,7 @@ func proxyConf() {
 	}
 	file, err := os.ReadFile(confPath)
 	if err != nil {
-		log.Fatal("EXITING \nNo prox.conf found, set proxConfPath={path to prox.conf}", err)
+		log.Println("\nNo prox.conf found, set proxConfPath={path to prox.conf}", err)
 	}
 	err = json.Unmarshal(file, &pc)
 	if err != nil {

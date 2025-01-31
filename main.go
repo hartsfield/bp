@@ -47,7 +47,6 @@ func main() {
 			fmt.Println("\nYOU ARE IN TESTING MODE! BEWARE")
 			fmt.Println("\nYOU ARE IN TESTING MODE! BEWARE")
 			fmt.Println("\nYOU ARE IN TESTING MODE! BEWARE")
-			<-ctx.Done()
 			os.Exit(0)
 		}
 	}
