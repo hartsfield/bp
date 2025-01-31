@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -87,7 +86,6 @@ func printLogJSON() {
 	if err != nil {
 		log.Println(err)
 	}
-	fmt.Println(string(b))
 	err = os.WriteFile("logject.json", b, 0666)
 	if err != nil {
 		log.Println(err)
