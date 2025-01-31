@@ -53,7 +53,7 @@ func main() {
 	}
 
 	if scan_err != nil {
-		log.Fatalln("EXITING \nDoes bolt.conf.json exist and is it configured properly?", scan_err)
+		// log.Fatalln("EXITING \nDoes bolt.conf.json exist and is it configured properly?", scan_err)
 	}
 
 	secure := newServerConf(tlsPort, http.HandlerFunc(forwardTLS))
