@@ -1,8 +1,11 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -77,8 +80,16 @@ func forwardTLS(w http.ResponseWriter, r *http.Request) {
 	notFound(w, r)
 }
 
+func printLogJSON() {
+	b, err := json.Marshal(hitCounterByIP)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(string(b))
+}
+
 func hitInfo(r *http.Request) {
-	log.Println("<IP:"+r.RemoteAddr, r.Referer(), r.Method, "<HOST:"+r.Host, "<URL:"+r.URL.String(), r.Pattern, r.Proto, "<UA:"+r.UserAgent())
+	log.Println("<:"+r.RemoteAddr, r.Referer(), r.Method, "<:"+r.Host, "<:"+r.URL.String(), r.Pattern, r.Proto, "<:"+r.UserAgent())
 	rr := &remoteReq{
 		time.Now(),
 		r.Referer(),
@@ -97,6 +108,14 @@ func hitInfo(r *http.Request) {
 		}
 	}
 	hitCounterByIP[r.RemoteAddr].Requests = append(hitCounterByIP[r.RemoteAddr].Requests, rr)
+	b, err := json.Marshal(hitCounterByIP)
+	if err != nil {
+		log.Println(err)
+	}
+	err = os.WriteFile("logject.json", b, 0666)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 // forwardHTTP checks the host name of HTTP traffic, if TLS is enabled, it

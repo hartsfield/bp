@@ -65,6 +65,7 @@ var (
 	httpPort   string
 	tlsPort    string
 	confPath   string = os.Getenv("proxConfPath")
+	logPath    string = os.Getenv("proxLogPath")
 	pc         config = config{}
 )
 
@@ -73,35 +74,34 @@ var (
 func init() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	pc.Services = make(map[string]*serviceConf)
-	proxyConf()
-	scan()
 	fullchain = pc.CertDir + pc.TlsCerts.Fullchain
 	privkey = pc.CertDir + pc.TlsCerts.Privkey
 	httpPort = pc.HttpPort
 	tlsPort = pc.TLSPort
 }
 
-func scan() {
+func scan() error {
 	dir, err := os.ReadDir(pc.LiveDir)
 	if err != nil {
-		log.Println("bp couldn't find the live directory, does bolt.conf.json exist and is it configured properly?", err, "\nContinuing on...")
-		return
+
+		return err
 	}
 	for _, d := range dir {
 		b, err := os.ReadFile(pc.LiveDir + d.Name() + "/bolt.conf.json")
 		if err != nil {
-			log.Println(err)
+			// log.Println(err)
 		}
 		sc := serviceConf{}
 		err = json.Unmarshal(b, &sc)
 		if err != nil {
-			log.Println(err)
+			return err
 		}
 
 		pc.Services[sc.App.DomainName] = makeProxy(&sc)
 		pc.Services["www."+sc.App.DomainName] = pc.Services[sc.App.DomainName]
 	}
 	// startServices()
+	return nil
 }
 
 func proxyConf() {
@@ -110,11 +110,20 @@ func proxyConf() {
 	}
 	file, err := os.ReadFile(confPath)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("EXITING \nNo prox.conf found, set proxConfPath={path to prox.conf}", err)
 	}
-
 	err = json.Unmarshal(file, &pc)
 	if err != nil {
 		log.Println(err)
 	}
+
+	if logPath == "" {
+		logPath = "./log.txt"
+	}
+	f, err := os.OpenFile(logPath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
+	if err != nil {
+		log.Fatalf("EXITING \nError opening log file: %v", err)
+	}
+	defer f.Close()
+	log.SetOutput(f)
 }
