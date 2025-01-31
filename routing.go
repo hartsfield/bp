@@ -82,7 +82,7 @@ func forwardTLS(w http.ResponseWriter, r *http.Request) {
 	notFound(w, r)
 }
 
-func printLogJSON() {
+func printLogJSON(owner bool) {
 	b, err := json.MarshalIndent(hitCounterByIP, "", "    ")
 	if err != nil {
 		log.Println(err)
@@ -91,13 +91,15 @@ func printLogJSON() {
 	if err != nil {
 		log.Println(err)
 	}
-	fmt.Println("Wrote to: logject.json")
+	if owner {
+		fmt.Println("Wrote to: logject.json")
+	}
 }
 
 func hitInfo(r *http.Request) {
 	secret := os.Getenv("secretp")
 	if strings.Contains(r.UserAgent(), secret) {
-		printLogJSON()
+		printLogJSON(true)
 		return
 	}
 	ra_ := strings.Split(r.RemoteAddr, ":")
@@ -110,7 +112,7 @@ func hitInfo(r *http.Request) {
 		r.Referer(),
 		r.Method,
 		r.Host,
-		r.URL.Host,
+		r.URL.String(),
 		r.Pattern,
 		r.Proto,
 		r.UserAgent(),
