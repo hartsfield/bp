@@ -99,13 +99,13 @@ func makeProxy(s *serviceConf) *serviceConf {
 }
 
 func listServices() {
-	if len(pc.Services) == 0 {
-		fmt.Println("\n\nDidn't detect any services in live dir... check the following:")
-		fmt.Println("prox.conf:", confPath)
-		fmt.Println("live dir:", pc.LiveDir)
-		fmt.Println()
-		return
-	}
+	// if len(pc.Services) == 0 {
+	// 	fmt.Println("\n\nDidn't detect any services in live dir... check the following:")
+	// 	fmt.Println("prox.conf:", confPath)
+	// 	fmt.Println("live dir:", pc.LiveDir)
+	// 	fmt.Println()
+	// 	return
+	// }
 
 	fmt.Print("\nServices:\n\n")
 	for s := range pc.Services {
