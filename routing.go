@@ -83,7 +83,7 @@ func forwardTLS(w http.ResponseWriter, r *http.Request) {
 }
 
 func printLogJSON() {
-	b, err := json.Marshal(hitCounterByIP)
+	b, err := json.MarshalIndent(hitCounterByIP, "", "    ")
 	if err != nil {
 		log.Println(err)
 	}
