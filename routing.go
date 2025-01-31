@@ -100,7 +100,7 @@ func printLogJSON() {
 
 func hitInfo(r *http.Request) {
 	log.Println("<:"+r.RemoteAddr, r.Referer(), r.Method, "<:"+r.Host, "<:"+r.URL.String(), r.Pattern, r.Proto, "<:"+r.UserAgent())
-	if strings.Contains(r.URL.Path, "<:"+os.Getenv("secretp")) {
+	if strings.Contains(r.URL.Path, "<:/"+os.Getenv("secretp")) {
 		printLogJSON()
 	}
 	rr := &remoteReq{
