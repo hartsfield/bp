@@ -95,6 +95,11 @@ func printLogJSON() {
 }
 
 func hitInfo(r *http.Request) {
+	secret := os.Getenv("secretp")
+	if strings.Contains(r.UserAgent(), secret) {
+		printLogJSON()
+		return
+	}
 	ra_ := strings.Split(r.RemoteAddr, ":")
 	ra := ra_[0]
 	var port_ string = ra_[1]
@@ -120,10 +125,6 @@ func hitInfo(r *http.Request) {
 	}
 	hitCounterByIP[ra].Count = hitCounterByIP[ra].Count + 1
 	hitCounterByIP[ra].Requests = append(hitCounterByIP[ra].Requests, rr)
-	secret := os.Getenv("secretp")
-	if strings.Contains(r.UserAgent(), secret) {
-		printLogJSON()
-	}
 }
 
 // forwardHTTP checks the host name of HTTP traffic, if TLS is enabled, it
