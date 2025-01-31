@@ -125,11 +125,12 @@ func hitInfo(r *http.Request, w http.ResponseWriter) bool {
 	}
 	if hitCounterByIP[ra] == nil {
 		hitCounterByIP[ra] = &hit{
-			ra,
-			0,
-			make(map[string][]*remoteReq),
+			IP:    ra,
+			Count: 0,
 		}
 	}
+
+	hitCounterByIP[ra].Hosts = make(map[string][]*remoteReq)
 	hitCounterByIP[ra].Count = hitCounterByIP[ra].Count + 1
 	hitCounterByIP[ra].Hosts[r.Host] = append(hitCounterByIP[ra].Hosts[r.Host], rr)
 	return false
