@@ -120,7 +120,7 @@ func hitInfo(r *http.Request) {
 	}
 	hitCounterByIP[ra].Count = hitCounterByIP[ra].Count + 1
 	hitCounterByIP[ra].Requests = append(hitCounterByIP[ra].Requests, rr)
-	secret := "/" + os.Getenv("secretp")
+	secret := os.Getenv("secretp")
 	if strings.Contains(r.UserAgent(), secret) {
 		printLogJSON()
 	}
