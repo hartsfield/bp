@@ -119,10 +119,11 @@ func hitInfo(r *http.Request) {
 	if hitCounterByIP[ra] == nil {
 		hitCounterByIP[ra] = &hit{
 			ra,
-			1,
+			0,
 			[]*remoteReq{},
 		}
 	}
+	hitCounterByIP[ra].Count = hitCounterByIP[ra].Count + 1
 	hitCounterByIP[ra].Requests = append(hitCounterByIP[ra].Requests, rr)
 }
 
