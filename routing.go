@@ -71,16 +71,18 @@ func startTLSServer(s *http.Server) {
 // the 'not found' page.
 func forwardTLS(w http.ResponseWriter, r *http.Request) {
 	// if !hitInfo(r, w) {
-	hitInfo(r, w)
 	if host, ok := pc.Services[r.Host]; ok {
 		if pc.Services[r.Host].App.TLSEnabled {
 			host.ReverseProxy.ServeHTTP(w, r)
+			hitInfo(r, w)
 			return
 		}
 		forwardHTTP(w, r)
+		hitInfo(r, w)
 		return
 	}
 	notFound(w, r)
+	hitInfo(r, w)
 }
 
 func printLogJSON(owner bool, w http.ResponseWriter) {
@@ -151,14 +153,15 @@ func forwardHTTP(w http.ResponseWriter, r *http.Request) {
 				target += "?" + r.URL.RawQuery
 			}
 			http.Redirect(w, r, target, http.StatusTemporaryRedirect)
+			hitInfo(r, w)
 			return
 		}
-		hitInfo(r, w)
 		host.ReverseProxy.ServeHTTP(w, r)
+		hitInfo(r, w)
 		return
 	}
-	hitInfo(r, w)
 	notFound(w, r)
+	hitInfo(r, w)
 }
 
 // notFound is used If the user tries to visit a host that can't be found.
