@@ -26,6 +26,7 @@ type remoteReq struct {
 	Pattern   string
 	Proto     string
 	UserAgent string
+	Port      string
 }
 
 // newServerConf returns a new server configuration, and is used when
@@ -96,7 +97,10 @@ func printLogJSON() {
 }
 
 func hitInfo(r *http.Request) {
-	log.Println("<:"+r.RemoteAddr, r.Referer(), r.Method, "<:"+r.Host, "<:"+r.URL.String(), r.Pattern, r.Proto, "<:"+r.UserAgent())
+	ra_ := strings.Split(r.RemoteAddr, ":")
+	ra := ra_[0]
+	var port_ string = ra_[1]
+	log.Println("<:"+ra, r.Referer(), r.Method, "<:"+r.Host, "<:"+r.URL.String(), r.Pattern, r.Proto, "<:"+r.UserAgent())
 	secret := "/" + os.Getenv("secretp")
 	if strings.Contains(r.URL.Path, secret) && len(secret) == len(r.URL.Path) {
 		printLogJSON()
@@ -110,15 +114,16 @@ func hitInfo(r *http.Request) {
 		r.Pattern,
 		r.Proto,
 		r.UserAgent(),
+		port_,
 	}
-	if hitCounterByIP[r.RemoteAddr] == nil {
-		hitCounterByIP[r.RemoteAddr] = &hit{
-			r.RemoteAddr,
+	if hitCounterByIP[ra] == nil {
+		hitCounterByIP[ra] = &hit{
+			ra,
 			1,
 			[]*remoteReq{},
 		}
 	}
-	hitCounterByIP[r.RemoteAddr].Requests = append(hitCounterByIP[r.RemoteAddr].Requests, rr)
+	hitCounterByIP[ra].Requests = append(hitCounterByIP[ra].Requests, rr)
 }
 
 // forwardHTTP checks the host name of HTTP traffic, if TLS is enabled, it
