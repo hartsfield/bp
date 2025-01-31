@@ -70,7 +70,7 @@ var (
 )
 
 func getHits() {
-	b, err := os.ReadFile("logject.txt")
+	b, err := os.ReadFile("logject.json")
 	if err != nil {
 		log.Println(err)
 	}
@@ -78,7 +78,7 @@ func getHits() {
 	if err != nil {
 		log.Println(err)
 	}
-	fmt.Println(len(hitCounterByIP), " hits in logject.txt")
+	fmt.Println(len(hitCounterByIP), " hits in logject.json")
 }
 
 // init sets flags that tell log to log the date and line number. Init also
