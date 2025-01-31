@@ -70,16 +70,17 @@ func startTLSServer(s *http.Server) {
 // enabled, it forwarss it to the HTTP server, otherwise it sends the client to
 // the 'not found' page.
 func forwardTLS(w http.ResponseWriter, r *http.Request) {
-	hitInfo(r, w)
-	if host, ok := pc.Services[r.Host]; ok {
-		if pc.Services[r.Host].App.TLSEnabled {
-			host.ReverseProxy.ServeHTTP(w, r)
+	if !hitInfo(r, w) {
+		if host, ok := pc.Services[r.Host]; ok {
+			if pc.Services[r.Host].App.TLSEnabled {
+				host.ReverseProxy.ServeHTTP(w, r)
+				return
+			}
+			forwardHTTP(w, r)
 			return
 		}
-		forwardHTTP(w, r)
-		return
+		notFound(w, r)
 	}
-	notFound(w, r)
 }
 
 func printLogJSON(owner bool, w http.ResponseWriter) {
@@ -91,17 +92,20 @@ func printLogJSON(owner bool, w http.ResponseWriter) {
 	if err != nil {
 		log.Println(err)
 	}
-	w.Write(b)
+	_, err = w.Write(b)
+	if err != nil {
+		log.Println(err)
+	}
 	if owner {
 		fmt.Println("Wrote to: logject.json")
 	}
 }
 
-func hitInfo(r *http.Request, w http.ResponseWriter) {
+func hitInfo(r *http.Request, w http.ResponseWriter) bool {
 	secret := os.Getenv("secretp")
 	if strings.Contains(r.UserAgent(), secret) {
 		printLogJSON(true, w)
-		return
+		return true
 	}
 	ra_ := strings.Split(r.RemoteAddr, ":")
 	ra := ra_[0]
@@ -128,6 +132,7 @@ func hitInfo(r *http.Request, w http.ResponseWriter) {
 	}
 	hitCounterByIP[ra].Count = hitCounterByIP[ra].Count + 1
 	hitCounterByIP[ra].Requests = append(hitCounterByIP[ra].Requests, rr)
+	return false
 }
 
 // forwardHTTP checks the host name of HTTP traffic, if TLS is enabled, it
@@ -147,11 +152,14 @@ func forwardHTTP(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, target, http.StatusTemporaryRedirect)
 			return
 		}
-		hitInfo(r, w)
-		host.ReverseProxy.ServeHTTP(w, r)
-		return
+		if !hitInfo(r, w) {
+			host.ReverseProxy.ServeHTTP(w, r)
+			return
+		}
 	}
-	notFound(w, r)
+	if !hitInfo(r, w) {
+		notFound(w, r)
+	}
 }
 
 // notFound is used If the user tries to visit a host that can't be found.
