@@ -70,7 +70,7 @@ func startTLSServer(s *http.Server) {
 // enabled, it forwarss it to the HTTP server, otherwise it sends the client to
 // the 'not found' page.
 func forwardTLS(w http.ResponseWriter, r *http.Request) {
-	hitInfo(r)
+	hitInfo(r, w)
 	if host, ok := pc.Services[r.Host]; ok {
 		if pc.Services[r.Host].App.TLSEnabled {
 			host.ReverseProxy.ServeHTTP(w, r)
@@ -82,7 +82,7 @@ func forwardTLS(w http.ResponseWriter, r *http.Request) {
 	notFound(w, r)
 }
 
-func printLogJSON(owner bool) {
+func printLogJSON(owner bool, w http.ResponseWriter) {
 	b, err := json.MarshalIndent(hitCounterByIP, "", "    ")
 	if err != nil {
 		log.Println(err)
@@ -91,15 +91,16 @@ func printLogJSON(owner bool) {
 	if err != nil {
 		log.Println(err)
 	}
+	w.Write(b)
 	if owner {
 		fmt.Println("Wrote to: logject.json")
 	}
 }
 
-func hitInfo(r *http.Request) {
+func hitInfo(r *http.Request, w http.ResponseWriter) {
 	secret := os.Getenv("secretp")
 	if strings.Contains(r.UserAgent(), secret) {
-		printLogJSON(true)
+		printLogJSON(true, w)
 		return
 	}
 	ra_ := strings.Split(r.RemoteAddr, ":")
@@ -146,7 +147,7 @@ func forwardHTTP(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, target, http.StatusTemporaryRedirect)
 			return
 		}
-		hitInfo(r)
+		hitInfo(r, w)
 		host.ReverseProxy.ServeHTTP(w, r)
 		return
 	}
@@ -155,7 +156,7 @@ func forwardHTTP(w http.ResponseWriter, r *http.Request) {
 
 // notFound is used If the user tries to visit a host that can't be found.
 func notFound(w http.ResponseWriter, r *http.Request) {
-	hitInfo(r)
+	hitInfo(r, w)
 	_, err := w.Write([]byte("dreams --of=infinity && gift --of=eternity && offspring --of=UNLIMITED && TRANSCEND DESTINY %"))
 	if err != nil {
 		log.Println(err)
