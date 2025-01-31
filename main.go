@@ -32,7 +32,6 @@ func main() {
 		log.Fatalf("error opening file: %v", err)
 	}
 	defer f.Close()
-	defer printLogJSON(true)
 	log.SetOutput(f)
 	insecure := newServerConf(httpPort, http.HandlerFunc(forwardHTTP))
 	secure := newServerConf(tlsPort, http.HandlerFunc(forwardTLS))
@@ -48,6 +47,7 @@ func main() {
 	fmt.Println()
 
 	<-ctx.Done()
+	printLogJSON(true)
 }
 
 type MyRoundTripper struct{}
