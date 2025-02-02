@@ -47,7 +47,7 @@ func main() {
 	fmt.Println()
 
 	<-ctx.Done()
-	printLogJSON(true, nil)
+	// printLogJSON(true, nil)
 }
 
 type MyRoundTripper struct{}

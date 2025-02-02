@@ -1,12 +1,8 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"strings"
 	"time"
 )
 
@@ -74,69 +70,70 @@ func forwardTLS(w http.ResponseWriter, r *http.Request) {
 	if host, ok := pc.Services[r.Host]; ok {
 		if pc.Services[r.Host].App.TLSEnabled {
 			host.ReverseProxy.ServeHTTP(w, r)
-			hitInfo(r, w)
+			// hitInfo(r, w)
 			return
 		}
 		forwardHTTP(w, r)
-		hitInfo(r, w)
+		// hitInfo(r, w)
 		return
 	}
 	notFound(w, r)
-	hitInfo(r, w)
+	// hitInfo(r, w)
 }
 
-func printLogJSON(owner bool, w http.ResponseWriter) {
-	b, err := json.MarshalIndent(hitCounterByIP, "", "    ")
-	if err != nil {
-		log.Println(err)
-	}
-	err = os.WriteFile("logject.json", b, 0666)
-	if err != nil {
-		log.Println(err)
-	}
-	_, err = w.Write(b)
-	if err != nil {
-		log.Println(err)
-	}
-	if owner {
-		fmt.Println("Wrote to: logject.json")
-	}
-}
+// func printLogJSON(owner bool, w http.ResponseWriter) {
+// 	b, err := json.MarshalIndent(hitCounterByIP, "", "    ")
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
+// 	err = os.WriteFile("logject.json", b, 0666)
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
+// 	_, err = w.Write(b)
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
 
-func hitInfo(r *http.Request, w http.ResponseWriter) bool {
-	secret := os.Getenv("secretp")
-	if strings.Contains(r.UserAgent(), secret) {
-		printLogJSON(true, w)
-		return true
-	}
-	ra_ := strings.Split(r.RemoteAddr, ":")
-	ra := ra_[0]
-	var port_ string = ra_[1]
-	log.Println("<:"+ra, r.Referer(), r.Method, "<:"+r.Host, "<:"+r.URL.String(), r.Pattern, r.Proto, "<:"+r.UserAgent())
+// 	if owner {
+// 		fmt.Println("Wrote to: logject.json")
+// 	}
+// }
 
-	rr := &remoteReq{
-		time.Now(),
-		r.Referer(),
-		r.Method,
-		r.Host,
-		r.URL.String(),
-		r.Pattern,
-		r.Proto,
-		r.UserAgent(),
-		port_,
-	}
-	if hitCounterByIP[ra] == nil {
-		hitCounterByIP[ra] = &hit{
-			IP:    ra,
-			Count: 0,
-		}
-	}
+// func hitInfo(r *http.Request, w http.ResponseWriter) bool {
+// 	secret := os.Getenv("secretp")
+// 	if strings.Contains(r.UserAgent(), secret) {
+// 		// printLogJSON(true, w)
+// 		return true
+// 	}
+// 	ra_ := strings.Split(r.RemoteAddr, ":")
+// 	ra := ra_[0]
+// 	var port_ string = ra_[1]
+// 	log.Println("<:"+ra, r.Referer(), r.Method, "<:"+r.Host, "<:"+r.URL.String(), r.Pattern, r.Proto, "<:"+r.UserAgent())
 
-	hitCounterByIP[ra].Hosts = make(map[string][]*remoteReq)
-	hitCounterByIP[ra].Count = hitCounterByIP[ra].Count + 1
-	hitCounterByIP[ra].Hosts[r.Host] = append(hitCounterByIP[ra].Hosts[r.Host], rr)
-	return false
-}
+// 	rr := &remoteReq{
+// 		time.Now(),
+// 		r.Referer(),
+// 		r.Method,
+// 		r.Host,
+// 		r.URL.String(),
+// 		r.Pattern,
+// 		r.Proto,
+// 		r.UserAgent(),
+// 		port_,
+// 	}
+// 	if hitCounterByIP[ra] == nil {
+// 		hitCounterByIP[ra] = &hit{
+// 			IP:    ra,
+// 			Count: 0,
+// 		}
+// 	}
+
+// 	hitCounterByIP[ra].Hosts = make(map[string][]*remoteReq)
+// 	hitCounterByIP[ra].Count = hitCounterByIP[ra].Count + 1
+// 	hitCounterByIP[ra].Hosts[r.Host] = append(hitCounterByIP[ra].Hosts[r.Host], rr)
+// 	return false
+// }
 
 // forwardHTTP checks the host name of HTTP traffic, if TLS is enabled, it
 // re-writes the address and forwards the client to the the https website,
@@ -153,20 +150,20 @@ func forwardHTTP(w http.ResponseWriter, r *http.Request) {
 				target += "?" + r.URL.RawQuery
 			}
 			http.Redirect(w, r, target, http.StatusTemporaryRedirect)
-			hitInfo(r, w)
+			// hitInfo(r, w)
 			return
 		}
 		host.ReverseProxy.ServeHTTP(w, r)
-		hitInfo(r, w)
+		// hitInfo(r, w)
 		return
 	}
 	notFound(w, r)
-	hitInfo(r, w)
+	// hitInfo(r, w)
 }
 
 // notFound is used If the user tries to visit a host that can't be found.
 func notFound(w http.ResponseWriter, r *http.Request) {
-	hitInfo(r, w)
+	// hitInfo(r, w)
 	_, err := w.Write([]byte("dreams --of=infinity && gift --of=eternity && offspring --of=UNLIMITED && TRANSCEND DESTINY %"))
 	if err != nil {
 		log.Println(err)
